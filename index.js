@@ -93,6 +93,11 @@ module.exports.errorLogger = function (opts) {
         req.log = childLogger;
 
         function logging(incoming) {
+            // Since the req.log object is modified throughout the request with
+            // more attributes (like userId) being added, we want to use that logger
+            // instead of the barebones on created when the request came in.
+            childLogger = req.log
+
             if (!incoming) {
                 res.removeListener('finish', logging);
                 res.removeListener('close', logging);
